@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><title>E-Waste & Management: Student Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet"><script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script><title>E-Waste & Management: Student Portfolio</title>
 <style>
 :root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f9f6;--card:#fff;--tx:#10231a;--mu:#5d7065;--ac:#17995c;--bd:#dce7df;--lime:#b6f26b}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1410;--card:#13211a;--tx:#e8f2ec;--mu:#92a99b;--ac:#4be08f;--bd:#233629}}
@@ -58,12 +58,16 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:10px 20px 36px}
 .gform .btn,.ubox .btn{width:auto;padding:10px 20px;margin-top:10px}.ubox input{margin-top:6px}
 #ol a{color:var(--ac);font-size:14px}
 #pv{background:#e9eee9;border:1px solid var(--bd);border-radius:14px;padding:12px;max-height:84vh;overflow:auto}#pv img{display:block;max-width:100%;margin:0 auto 12px;border:1px solid #ccc;background:#fff}
+.fc{text-align:center;padding:40px 16px;background:var(--card);border-radius:12px}
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;z-index:9;max-width:90vw}
 </style></head><body>
 <div id="home">
 <section class="hero"><div class="w">
 <div class="eye">Subject Portfolio · Semester 5 · Batch 2026–2027</div>
 <h1>E-Waste &amp;<br><em>Management</em></h1>
 <p class="who"><b>Ali Mehdi Mirza</b> · TE CMPN C · Roll No. 24102C0054 · Batch 2026–2027 &nbsp;|&nbsp; Prof. <b>Aniket Kundu</b></p>
+<div id="ex" class="hide" style="margin-top:22px"><button class="btn" id="exb" onclick="exp()" style="width:auto;padding:10px 20px">⬇ Export site for my professor</button><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Owner mode: open an assignment to upload or remove files. Then click Export and upload the downloaded index.html to Netlify.</p><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Got grades.json back from your professor? <input type="file" accept=".json" onchange="impG(this)" style="font-size:12px"></p></div>
+<div id="gx" class="hide" style="margin-top:22px"><button class="btn" onclick="sendG()" style="width:auto;padding:10px 20px">✉ Send my grades</button><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Professor: grade inside each assignment, then click here to return your grades.</p></div>
 <div class="prog"><div class="big"><span id="rd"></span><small>/<span id="tt"></span></small></div>
 <div class="bar"><div class="t"><div class="f" id="pf"></div></div><p>assignments ready to view and grade. The rest are being uploaded.</p></div></div>
 </div></section>
@@ -71,7 +75,8 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:10px 20px 36px}
 <div class="sec"><h2>Assignments</h2><div class="fl" id="fl"><button class="on" data-f="all">All</button><button data-f="ok">Ready</button><button data-f="wait">Uploading</button></div></div>
 <div class="list" id="g"></div>
 </main>
-<footer>Tap any ready assignment to open the work. Everything opens inside this page.</footer>
+<input type="file" id="qi" multiple class="hide" onchange="upload(this,QI)"><div id="toast" class="hide"></div>
+<footer>Tap any ready assignment to open the work. Everything opens inside this page. · <a href="#" onclick="toggleEdit();return false" style="color:inherit">Owner mode</a></footer>
 </div>
 <div id="view" class="hide"><div class="w">
 <button class="back" onclick="location.hash=''">← All assignments</button>
@@ -81,7 +86,7 @@ footer{text-align:center;color:var(--mu);font-size:13px;padding:10px 20px 36px}
 <div id="pv" class="hide"></div>
 <iframe id="fr" sandbox="allow-scripts allow-popups" title="Assignment work"></iframe>
 <p id="ol" style="margin:8px 0 0"></p>
-<div class="ubox hide" id="ub"><h3>⬆ Upload your submission</h3><p class="sub" style="font-size:13px">PDF, image or text files only. Convert Word, PPT or Excel to PDF first. Your professor sees it instantly.</p><input type="file" id="fi" multiple accept=".pdf,.png,.jpg,.jpeg,.webp,.csv,.txt,.md,.json,.mp4" onchange="upload(this)"><p class="sub" id="um"></p></div>
+<div class="ubox hide" id="ub"><h3>⬆ Upload your submission</h3><p class="sub" style="font-size:13px">Any file type works: PDF, Word, Excel, PPT, images, zip… PDF, Word, Excel and images preview inside the page; other types can be downloaded.</p><input type="file" id="fi" multiple onchange="upload(this)"><p class="sub" id="um"></p></div>
 <div id="gp"></div>
 <p class="sub" id="vn" style="margin-top:14px;font-size:13px"></p>
 <button class="back" onclick="location.hash=''">← All assignments</button>
@@ -104,16 +109,25 @@ const A=[
 {d:"29 Sep",id:"LEED Certification of Green Buildings in India",h:"Building Green: LEED-Certified Buildings Across India",s:"Ratings of 10 recent LEED-certified buildings with supporting notes.",f:[["Ratings sheet","leedx"],["Notes","leedd"]]},
 {bonus:1,d:"Bonus",id:"Research paper (IEEE format)",h:"Law Relating to E-Waste: An IEEE-Format Review",s:"Review of global and Indian e-waste law, impacts and disposal.",f:[["IEEE paper","ieee"]]}
 ];
+const EMB=/*E*/{}/*E*/;
+const M="/*"+"E*/",EDIT=location.protocol=="file:"||(()=>{try{return localStorage.getItem("ewedit")=="1"}catch(e){return false}})()||/[?&]edit/.test(location.search)||["localhost","127.0.0.1"].includes(location.hostname);
 const $=i=>document.getElementById(i);
-let SUBS={},GR={},DB=null,AS=null,ME=null,OWN=false,CUR=-1,TAB=0,flt="all";
-const key=i=>"a"+(i+1),up=i=>(SUBS[key(i)]||{}).files||[],has=i=>A[i].f.length+up(i).length>0,canOpen=i=>has(i)||(OWN&&AS);
-const core=A.filter(a=>!a.bonus),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let RAW={},GR={},CUR=-1,TAB=0,flt="all",PEND="";
+const VCSS='<meta charset=utf-8><style>body{font-family:Arial,sans-serif;max-width:860px;margin:0 auto;padding:18px;line-height:1.5;color:#111;background:#fff}table{border-collapse:collapse;font-size:13px;margin-bottom:14px}td,th{border:1px solid #ccc;padding:4px 8px}img{max-width:100%}</style>';
+const sz=n=>n>1e6?(n/1e6).toFixed(1)+" MB":Math.max(1,Math.round(n/1e3))+" KB";
+const key=i=>"a"+(i+1),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const idb=()=>new Promise((r,j)=>{const q=indexedDB.open("ewaste",1);q.onupgradeneeded=()=>q.result.createObjectStore("s");q.onsuccess=()=>r(q.result);q.onerror=()=>j(q.error)});
+const iget=async()=>{const d=await idb();return new Promise(r=>{const o={},q=d.transaction("s").objectStore("s").openCursor();q.onsuccess=()=>{const c=q.result;if(c){o[c.key]=c.value;c.continue()}else r(o)};q.onerror=()=>r({})})};
+const iset=async(k,v)=>{const d=await idb();return new Promise((r,j)=>{const t=d.transaction("s","readwrite"),s=t.objectStore("s");v.length?s.put(v,k):s.delete(k);t.oncomplete=r;t.onerror=()=>j(t.error)})};
+const U=new WeakMap(),ou=b=>b instanceof Blob?(U.has(b)||U.set(b,URL.createObjectURL(b)),U.get(b)):b;
+const up=i=>(RAW[key(i)]||[]).map(f=>({name:f.name,type:f.type,url:ou(f.blob||f.data),size:f.size||0,html:f.html||null,pages:f.pages&&f.pages.length?f.pages.map(p=>({url:ou(p)})):null}));
+const has=i=>A[i].f.length+(RAW[key(i)]||[]).length>0,canOpen=i=>has(i)||EDIT,core=A.filter(a=>!a.bonus);
 function list(){
  const rd=A.map((a,i)=>i).filter(i=>!A[i].bonus&&has(i)).length;
  $("rd").textContent=rd;$("tt").textContent=core.length;$("pf").style.width=(rd/core.length*100)+"%";
- $("g").innerHTML=A.map((a,i)=>i).filter(i=>flt=="all"||(flt=="ok")==has(i)).map(i=>{const a=A[i],ok=has(i),g=GR[key(i)],c=canOpen(i);
- const chip=g?`<span class="chip ok">★ Graded ${esc(g.score)}/${esc(g.outOf)}</span>`:ok?`<span class="chip ok">✓ Ready to grade</span>`:OWN&&AS?`<span class="chip up">⬆ Upload</span>`:`<span class="chip wait">Uploading today</span>`;
- return `<div class="row ${c?"":"off"}" ${c?`onclick="location.hash='work-${i+1}'"`:""}><span class="no">${a.bonus?"★":String(i+1).padStart(2,"0")}</span><span class="mid"><h3>${a.h}</h3><p>${a.d} · ${a.id}</p></span>${chip}${c?'<span class="go">→</span>':""}</div>`}).join("")}
+ $("g").innerHTML=A.map((a,i)=>i).filter(i=>flt=="all"||(flt=="ok")==has(i)).map(i=>{const a=A[i],ok=has(i),c=canOpen(i);
+ const g=GR[key(i)],chip=g?`<span class="chip ok">★ Graded ${esc(g.score)}/${esc(g.outOf)}</span>`:ok?`<span class="chip ok">✓ Ready to grade</span>`:EDIT?"":`<span class="chip wait">Uploading today</span>`;
+ return `<div class="row ${c?"":"off"}" ${c?`onclick="location.hash='work-${i+1}'"`:""}><span class="no">${a.bonus?"★":String(i+1).padStart(2,"0")}</span><span class="mid"><h3>${a.h}</h3><p>${a.d} · ${a.id}</p></span>${chip}${EDIT?`<button class="chip up" style="border:0;cursor:pointer" onclick="event.stopPropagation();pick(${i})">⬆ ${ok?"Add file":"Upload"}</button>`:""}${c?'<span class="go">→</span>':""}</div>`}).join("")}
 $("fl").onclick=e=>{if(e.target.dataset.f){flt=e.target.dataset.f;[...$("fl").children].forEach(b=>b.classList.toggle("on",b==e.target));list()}};
 function setFrame(doc,v){const f=$("fr");if(doc){f.setAttribute("sandbox","allow-scripts allow-popups");f.removeAttribute("src");f.srcdoc=v}else{f.removeAttribute("srcdoc");f.removeAttribute("sandbox");f.src=v}}
 function show(i,k){
@@ -121,44 +135,57 @@ function show(i,k){
  $("vk").textContent=a.bonus?"Bonus work":"Assignment "+(i+1);$("vh").textContent=a.h;$("vs").textContent=a.s;$("vn").textContent="Portal: "+a.id;
  if(TAB>=tabs.length)TAB=0;
  $("vt").innerHTML=tabs.length>1?tabs.map((t,j)=>`<button class="tab ${j==TAB?"on":""}" onclick="show(${i},${j})">${esc(t[0])}</button>`).join(""):"";
- const fr=$("fr"),ol=$("ol");
- const pv=$("pv"),sig=i+"|"+TAB+"|"+tabs.length+"|"+(tabs[TAB]&&tabs[TAB][1]==1?JSON.stringify(u[tabs[TAB][2]]||{}).length:0);
+ const fr=$("fr"),ol=$("ol"),pv=$("pv"),sig=i+"|"+TAB+"|"+tabs.length+"|"+u.map(x=>x.name).join();
  if(!tabs.length){fr.classList.add("hide");pv.classList.add("hide");ol.innerHTML="";fr.dataset.sig=""}
  else if(fr.dataset.sig!=sig){fr.dataset.sig=sig;const t=tabs[TAB],uf=t[1]==1?u[t[2]]:null,imgs=uf?(uf.pages||(/^image\//.test(uf.type||"")?[{url:uf.url}]:null)):null;
   fr.classList.toggle("hide",!!imgs);pv.classList.toggle("hide",!imgs);
-  if(imgs)pv.innerHTML=imgs.map(p=>`<img src="${esc(p.url)}" alt="page">`).join("");else if(t[1]==0)setFrame(1,DOCS[t[2]]);else setFrame(0,uf.url);
-  ol.innerHTML=uf?`<a href="${esc(uf.url)}" target="_blank" rel="noopener">Open original in new tab ↗</a>`+(OWN&&AS?` · <a href="#" onclick="rm(${i},${t[2]},this);return false">Remove this file</a>`:""):""}
- $("ub").classList.toggle("hide",!(OWN&&AS));
+  const other=uf&&!imgs&&!uf.html&&!/pdf|^text\//i.test(uf.type||"")&&!/\.(pdf|txt|md|csv|json)$/i.test(uf.name);
+  if(other){fr.classList.add("hide");pv.classList.remove("hide");pv.innerHTML=`<div class="fc"><div style="font-size:42px">📄</div><b>${esc(uf.name)}</b><p>${sz(uf.size)} · preview isn't available for this file type</p><a class="btn" style="display:inline-block;width:auto;padding:10px 22px" href="${esc(uf.url)}" download="${esc(uf.name)}">⬇ Download file</a></div>`}
+  else if(imgs)pv.innerHTML=imgs.map(p=>`<img src="${esc(p.url)}" alt="page">`).join("");else if(t[1]==0)setFrame(1,DOCS[t[2]]);else if(uf.html)setFrame(1,uf.html);else setFrame(0,uf.url);
+  ol.innerHTML=uf?`<a href="${esc(uf.url)}" target="_blank" rel="noopener" download="${esc(uf.name)}">Open / download original ↗</a>`+(EDIT?` · <a href="#" onclick="rm(${i},${t[2]},this);return false">Remove this file</a>`:""):""}
+$("ub").classList.toggle("hide",!EDIT);
  const g=GR[key(i)];let h="";
  if(g)h+=`<div class="gcard"><div class="gs">${esc(g.score)}<small>/${esc(g.outOf)}</small></div><div><b>Graded${g.by?" by "+esc(g.by):""}</b><p>${esc(g.fb||"No feedback written.")}</p></div></div>`;
- if(DB&&!OWN&&tabs.length)h+=`<div class="gform"><h3>${g?"Update grade":"Grade this assignment"}</h3><div class="gr"><input id="gsc" type="number" step="0.5" min="0" placeholder="Marks" value="${g?esc(g.score):""}"><span>out of</span><input id="gof" type="number" min="1" value="${g?esc(g.outOf):10}"></div><textarea id="gfb" rows="3" placeholder="Feedback for Ali (optional)">${g?esc(g.fb||""):""}</textarea><button class="btn" onclick="grade(${i})">Save grade</button><p class="sub" id="gm"></p></div>`;
- else if(!g&&OWN&&tabs.length)h+=`<p class="sub">Waiting for your professor to grade this.</p>`;
- if(!$("gp").contains(document.activeElement)||g)$("gp").innerHTML=h;
+ if(!EDIT&&tabs.length){if(!$("gp").querySelector("#gsc")||fr.dataset.gk!=key(i)){fr.dataset.gk=key(i);h+=`<div class="gform"><h3>${g?"Update grade":"Grade this assignment"}</h3><div class="gr"><input id="gsc" type="number" step="0.5" min="0" placeholder="Marks" value="${g?esc(g.score):""}"><span>out of</span><input id="gof" type="number" min="1" value="${g?esc(g.outOf):10}"></div><textarea id="gfb" rows="3" placeholder="Feedback (optional)">${g?esc(g.fb||""):""}</textarea><button class="btn" onclick="grade(${i})">Save grade</button><p class="sub" id="gm">Grades are saved on this device. Use “Send grades” on the home page to return them.</p></div>`;$("gp").innerHTML=h}}
+ else $("gp").innerHTML=h||(EDIT&&tabs.length?'<p class="sub">Grades from your professor appear here after you import them from the home page.</p>':"");
 }
-function msg(t){$("um").textContent=t}
-async function upload(inp){const i=CUR,fl=[...inp.files];if(!AS||!fl.length)return;msg("Uploading…");
- try{const cur=up(i).slice();for(const f of fl){const r=await AS.upload(f),e={name:f.name,id:r.id,url:r.url,type:f.type};
-   if(/pdf/i.test(f.type)||/\.pdf$/i.test(f.name)){try{e.pages=await pdfPages(f)}catch(x){console.error(x)}}cur.push(e)}
-  await DB.collection("subs").doc(key(i)).set({files:cur,at:Date.now()});msg("Uploaded ✓ Your professor can now see it.")}
- catch(e){msg("Upload failed: "+(e.code=="unsupported_type"?"Word/PPT/Excel aren't accepted. Please convert to PDF first.":e.message||e.code))}inp.value=""}
+function msg(t){$("um").textContent=t;const o=$("toast");o.textContent=t;o.classList.remove("hide");clearTimeout(msg.t);msg.t=setTimeout(()=>o.classList.add("hide"),3500)}
 async function pdfPages(f){const L=window.pdfjsLib;if(!L)throw new Error("pdf.js missing");
  L.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
- const d=await L.getDocument({data:await f.arrayBuffer()}).promise,n=Math.min(d.numPages,30),out=[];
+ const d=await L.getDocument({data:await f.arrayBuffer()}).promise,n=Math.min(d.numPages,40),out=[];
  for(let p=1;p<=n;p++){msg("Preparing page "+p+" of "+n+"…");const pg=await d.getPage(p),vp=pg.getViewport({scale:1.5}),c=document.createElement("canvas");c.width=vp.width;c.height=vp.height;
-  await pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;const b=await new Promise(r=>c.toBlob(r,"image/jpeg",.8)),r=await AS.upload(b);out.push({id:r.id,url:r.url})}return out}
-let PEND="";
-async function rm(i,j,el){const k=i+"-"+j;if(PEND!=k){PEND=k;el.textContent="Click again to confirm removal";setTimeout(()=>{PEND="";if(el.isConnected)el.textContent="Remove this file"},4000);return}PEND="";msg("Removing…");const cur=up(i).slice(),[x]=cur.splice(j,1);try{await DB.collection("subs").doc(key(i)).set({files:cur,at:Date.now()});for(const id of [x.id,...(x.pages||[]).map(p=>p.id)]){try{await AS.delete(id)}catch(_){}}TAB=0}catch(e){msg("Failed: "+(e.message||e.code))}}
-async function grade(i){const s=$("gsc").value,o=$("gof").value;if(s===""){$("gm").textContent="Enter marks first.";return}
- try{await DB.collection("grades").doc(key(i)).set({score:+s,outOf:+o||10,fb:$("gfb").value.trim(),by:ME&&ME.name||"",at:Date.now()});$("gm").textContent="Saved ✓"}
- catch(e){$("gm").textContent="Couldn't save. The owner must share this page with you as Contributor."}}
+  await pg.render({canvasContext:c.getContext("2d"),viewport:vp}).promise;out.push(await new Promise(r=>c.toBlob(r,"image/jpeg",.8)))}return out}
+let QI=0;function pick(i){QI=i;$("qi").click()}
+function toggleEdit(){try{if(localStorage.getItem("ewedit")=="1")localStorage.removeItem("ewedit");else localStorage.setItem("ewedit","1")}catch(e){}location.href=location.pathname}
+async function upload(inp,idx){const i=idx==null?CUR:idx,fl=[...inp.files];if(!fl.length)return;msg("Saving…");
+ try{const cur=(RAW[key(i)]||[]).slice();for(const f of fl){const e={name:f.name,type:f.type,blob:f};
+   e.size=f.size;try{if(/pdf/i.test(f.type)||/\.pdf$/i.test(f.name))e.pages=await pdfPages(f);else if(/\.docx$/i.test(f.name)){msg("Reading Word file…");e.html=VCSS+(await mammoth.convertToHtml({arrayBuffer:await f.arrayBuffer()})).value}
+   else if(/\.(xlsx|xls|csv)$/i.test(f.name)){msg("Reading spreadsheet…");const wb=XLSX.read(await f.arrayBuffer());e.html=VCSS+wb.SheetNames.map(n=>"<h3>"+esc(n)+"</h3>"+((XLSX.utils.sheet_to_html(wb.Sheets[n]).match(/<table[\s\S]*<\/table>/)||[""])[0])).join("")}}catch(x){console.error(x)}cur.push(e)}
+  RAW[key(i)]=cur;await iset(key(i),cur);msg("Saved ✓ When finished, click “Export site” on the home page.");$("fr").dataset.sig="";route()}
+ catch(e){msg("Failed: "+(e.message||e))}inp.value=""}
+async function rm(i,j,el){const k=i+"-"+j;if(PEND!=k){PEND=k;el.textContent="Click again to confirm removal";setTimeout(()=>{PEND="";if(el.isConnected)el.textContent="Remove this file"},4000);return}PEND="";
+ try{const cur=(RAW[key(i)]||[]).slice();cur.splice(j,1);RAW[key(i)]=cur;if(!cur.length)delete RAW[key(i)];await iset(key(i),cur);TAB=0;$("fr").dataset.sig="";msg("Removed ✓");route()}catch(e){msg("Failed: "+(e.message||e))}}
+async function exp(){const b=$("exb");b.textContent="Preparing…";
+ try{const toD=x=>x instanceof Blob?new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(x)}):x,out={};
+  for(const k in RAW){out[k]=[];for(const f of RAW[k])out[k].push({name:f.name,type:f.type,size:f.size,html:f.html,data:await toD(f.blob||f.data),pages:await Promise.all((f.pages||[]).map(toD))})}
+  out._g=GR;const c=document.documentElement.cloneNode(true);const fr=c.querySelector("#fr");fr.removeAttribute("srcdoc");fr.removeAttribute("src");fr.removeAttribute("data-sig");["pv","g","ol","vt","gp"].forEach(x=>c.querySelector("#"+x).innerHTML="");
+  let h="<!DOCTYPE html>\n"+c.outerHTML;const s=h.indexOf(M),e=h.indexOf(M,s+5);
+  h=h.slice(0,s)+M+JSON.stringify(out).replace(/<\//g,"<\\/")+h.slice(e);
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([h],{type:"text/html"}));a.download="index.html";a.click();b.textContent="⬇ Export site again"}
+ catch(e){b.textContent="Export failed: "+(e.message||e)}}
 function route(){
  const m=location.hash.match(/work-(\d+)/),i=m?+m[1]-1:-1,ok=i>=0&&A[i]&&canOpen(i);
  $("home").classList.toggle("hide",!!ok);$("view").classList.toggle("hide",!ok);
  if(ok){show(i);if(CUR!=i)scrollTo(0,0)}else CUR=-1;list()}
 addEventListener("hashchange",()=>{TAB=0;$("fr").dataset.sig="";route()});
-route();
-(async()=>{if(!window.claude)return;
- try{DB=await claude.use("db");AS=await claude.use("assets");const U=await claude.use("user");if(U){OWN=await U.isOwner();ME=await U.me()}
- if(DB){DB.collection("subs").onSnapshot(s=>{SUBS={};s.docs.forEach(d=>SUBS[d.id]=d.data());route()});DB.collection("grades").onSnapshot(s=>{GR={};s.docs.forEach(d=>GR[d.id]=d.data());route()})}
- route()}catch(e){console.error(e)}})();
+function saveG(){try{localStorage.setItem("ewgr",JSON.stringify(GR))}catch(e){}}
+function grade(i){const s=$("gsc").value;if(s===""){$("gm").textContent="Enter marks first.";return}GR[key(i)]={score:+s,outOf:+$("gof").value||10,fb:$("gfb").value.trim(),at:Date.now()};saveG();$("fr").dataset.gk="";route();$("gm").textContent="Saved ✓ on this device. Go back and click “Send grades”."}
+function sendG(){const t=A.map((a,i)=>GR[key(i)]?`${i+1}. ${a.h}: ${GR[key(i)].score}/${GR[key(i)].outOf}${GR[key(i)].fb?" — "+GR[key(i)].fb:""}`:"").filter(Boolean).join("\n"),
+ a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(GR,null,1)],{type:"application/json"}));a.download="grades.json";a.click();
+ setTimeout(()=>location.href="mailto:?subject="+encodeURIComponent("Grades: E-Waste & Management (Ali Mehdi Mirza, 24102C0054)")+"&body="+encodeURIComponent(t+"\n\n(grades.json downloaded, please attach it)"),400)}
+async function impG(inp){try{Object.assign(GR,JSON.parse(await inp.files[0].text()));saveG();route();$("exb").textContent="Grades imported ✓ now Export"}catch(e){alert("Not a valid grades.json")}inp.value=""}
+(async()=>{try{GR=Object.assign({},EMB._g||{},JSON.parse(localStorage.getItem("ewgr")||"{}"))}catch(e){GR=Object.assign({},EMB._g||{})}
+ delete EMB._g;
+ try{if(EDIT){RAW=await iget();if(!Object.keys(RAW).length&&Object.keys(EMB).length){RAW=JSON.parse(JSON.stringify(EMB));for(const k in RAW)await iset(k,RAW[k])}}else RAW=JSON.parse(JSON.stringify(EMB))}catch(e){RAW=JSON.parse(JSON.stringify(EMB))}
+ $("ex").classList.toggle("hide",!EDIT);$("gx").classList.toggle("hide",EDIT);route()})();
 </script></body></html>
