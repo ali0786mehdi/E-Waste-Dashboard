@@ -3,333 +3,652 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<title>E-Waste & Management: Student Portfolio</title>
+<title>EWEM Dashboard - Student Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
-:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f6f9f6;--card:#fff;--tx:#10231a;--mu:#5d7065;--ac:#17995c;--bd:#dce7df;--lime:#b6f26b}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1410;--card:#13211a;--tx:#e8f2ec;--mu:#92a99b;--ac:#4be08f;--bd:#233629}}
-:root[data-theme="dark"]{--bg:#0b1410;--card:#13211a;--tx:#e8f2ec;--mu:#92a99b;--ac:#4be08f;--bd:#233629}
-*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--tx);font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif;line-height:1.5}
-.w{max-width:860px;margin:0 auto;padding:0 20px}
-.serif{font-family:Fraunces,Georgia,serif}
-.hero{background:radial-gradient(900px 400px at 85% -10%,#1f7a4d55,transparent),linear-gradient(160deg,#0a241a,#0f3a28);color:#eaf6ef;padding:56px 0 44px}
-.eye{color:var(--lime);font-weight:600;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
-.hero h1{font-family:Fraunces,Georgia,serif;font-weight:600;font-size:clamp(38px,8vw,68px);line-height:1.02;margin:12px 0 14px;letter-spacing:-.02em}
-.hero h1 em{font-style:italic;color:var(--lime)}
-.who{color:#b9d3c4;font-size:15px;margin:0}
-.who b{color:#fff}
-.prog{margin-top:30px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.big{font-family:Fraunces,Georgia,serif;font-size:56px;line-height:1;color:var(--lime)}
-.big small{font-size:22px;color:#b9d3c4}
-.bar{flex:1;min-width:200px}
-.bar div.t{height:8px;background:#ffffff22;border-radius:9px;overflow:hidden}
-.bar div.f{height:100%;background:var(--lime);border-radius:9px;transition:width 0.3s ease}
-.bar p{margin:8px 0 0;font-size:13px;color:#b9d3c4}
-.sec{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:10px;margin:34px 0 14px}
-.sec h2{font-family:Fraunces,Georgia,serif;font-size:26px;margin:0}
-.fl{display:flex;gap:6px}
-.fl button{border:1px solid var(--bd);background:var(--card);color:var(--mu);border-radius:99px;padding:5px 13px;font-size:13px;cursor:pointer}
-.fl button.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
-.list{display:flex;flex-direction:column;gap:10px;padding-bottom:20px}
-.row{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;cursor:pointer;transition:.15s;text-align:left;color:inherit;font:inherit;width:100%}
-.row:hover{border-color:var(--ac);transform:translateY(-2px)}
-.row.off{cursor:default;opacity:.62}.row.off:hover{transform:none;border-color:var(--bd)}
-.no{font-family:Fraunces,Georgia,serif;font-size:30px;color:var(--ac);min-width:40px;line-height:1}
-.mid{flex:1;min-width:0}
-.mid h3{font-size:17px;margin:0 0 3px;line-height:1.3}
-.mid p{margin:0;font-size:12.5px;color:var(--mu)}
-.chip{font-size:12px;font-weight:600;border-radius:99px;padding:4px 11px;white-space:nowrap}
-.chip.ok{background:#17995c1f;color:var(--ac)}.chip.wait{background:#e0a2371f;color:#c98a14}
-.go{color:var(--ac);font-size:20px}
-.hide{display:none!important}
-.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}
-.tab{border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:99px;padding:6px 14px;cursor:pointer;font-size:14px}
-.tab.on{background:var(--ac);color:#fff;border-color:var(--ac)}
-iframe{width:100%;height:80vh;border:1px solid var(--bd);border-radius:14px;background:#fff}
-.back{background:none;border:0;color:var(--ac);font-weight:600;cursor:pointer;font-size:15px;padding:18px 0 0}
-.vh{font-family:Fraunces,Georgia,serif;font-size:clamp(26px,5vw,38px);line-height:1.15;margin:8px 0}
-.sub{color:var(--mu);margin:0}
-footer{text-align:center;color:var(--mu);font-size:13px;padding:10px 20px 36px}
-@media(max-width:560px){.row{flex-wrap:wrap}.go{display:none}.no{font-size:24px;min-width:30px}}
-.chip.up{background:var(--ac);color:#fff}
-.gcard{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--ac);border-radius:16px;padding:16px 18px;margin-top:14px}
-.gs{font-family:Fraunces,Georgia,serif;font-size:44px;color:var(--ac);line-height:1}.gs small{font-size:18px;color:var(--mu)}.gcard p{margin:2px 0 0;color:var(--mu)}
-.gform,.ubox{background:var(--card);border:1px solid var(--bd);border-radius:16px;padding:16px 18px;margin-top:14px}
-.gform h3,.ubox h3{margin:0 0 10px;font-size:16px}.gr{display:flex;gap:10px;align-items:center;margin-bottom:10px}
-.gform input,.gform textarea{font:inherit;padding:9px 11px;border:1px solid var(--bd);border-radius:10px;background:var(--bg);color:var(--tx);width:100%}.gr input{width:110px}
-.gform .btn,.ubox .btn{width:auto;padding:10px 20px;margin-top:10px}.ubox input{margin-top:6px}
-#ol a{color:var(--ac);font-size:14px}
-#pv{background:#e9eee9;border:1px solid var(--bd);border-radius:14px;padding:12px;max-height:84vh;overflow:auto}#pv img{display:block;max-width:100%;margin:0 auto 12px;border:1px solid #ccc;background:#fff}
-.fc{text-align:center;padding:40px 16px;background:var(--card);border-radius:12px}
-#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--tx);color:var(--bg);padding:10px 18px;border-radius:99px;font-size:14px;z-index:9;max-width:90vw}
-.group-header {
-    font-family: Fraunces, Georgia, serif;
-    font-size: 22px;
-    color: var(--tx);
-    margin: 24px 0 10px 0;
-    padding-bottom: 5px;
-    border-bottom: 2px solid var(--lime);
-}
+    :root {
+        --bg-dark: #0b0f19;
+        --surface: #151a28;
+        --surface-hover: #1e2538;
+        --primary: #00ff88;
+        --primary-dim: rgba(0, 255, 136, 0.15);
+        --text-main: #f8fafc;
+        --text-muted: #94a3b8;
+        --border: #2a3143;
+        --danger: #ff4757;
+        --warning: #ffa502;
+        --warning-dim: rgba(255, 165, 2, 0.15);
+    }
+
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: var(--bg-dark);
+        color: var(--text-main);
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+    }
+
+    /* Sidebar Styles */
+    .sidebar {
+        width: 260px;
+        background-color: var(--surface);
+        border-right: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        padding: 24px 0;
+    }
+
+    .logo-container {
+        padding: 0 24px 32px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .logo-icon {
+        width: 36px;
+        height: 36px;
+        background: var(--primary-dim);
+        color: var(--primary);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 20px;
+        border: 1px solid var(--primary);
+    }
+
+    .logo-text {
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .nav-menu {
+        list-style: none;
+        padding: 0 12px;
+    }
+
+    .nav-item {
+        padding: 12px 16px;
+        margin-bottom: 8px;
+        border-radius: 8px;
+        color: var(--text-muted);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .nav-item:hover {
+        background-color: var(--surface-hover);
+        color: var(--text-main);
+    }
+
+    .nav-item.active {
+        background-color: var(--primary-dim);
+        color: var(--primary);
+        border-right: 3px solid var(--primary);
+    }
+
+    /* Main Content Styles */
+    .main-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+
+    /* Topbar */
+    .topbar {
+        height: 72px;
+        border-bottom: 1px solid var(--border);
+        background-color: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .search-box {
+        background-color: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 8px 16px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        width: 300px;
+    }
+
+    .search-box input {
+        background: none;
+        border: none;
+        color: var(--text-main);
+        outline: none;
+        width: 100%;
+    }
+
+    .user-profile {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .user-info {
+        text-align: right;
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 14px;
+    }
+
+    .user-role {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: var(--primary);
+        color: var(--bg-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+    }
+
+    /* Dashboard Content */
+    .dashboard-container {
+        padding: 32px;
+        max-width: 1400px;
+        margin: 0 auto;
+        width: 100%;
+    }
+
+    .page-header {
+        margin-bottom: 32px;
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .page-subtitle {
+        color: var(--text-muted);
+        font-size: 14px;
+    }
+
+    /* KPI Cards */
+    .kpi-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 24px;
+        margin-bottom: 40px;
+    }
+
+    .kpi-card {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .kpi-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        background-color: var(--primary-dim);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .kpi-details h3 {
+        color: var(--text-muted);
+        font-size: 13px;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+    }
+
+    .kpi-details .value {
+        font-size: 28px;
+        font-weight: 700;
+    }
+
+    .progress-bar-container {
+        width: 100%;
+        height: 6px;
+        background-color: var(--border);
+        border-radius: 4px;
+        margin-top: 12px;
+        overflow: hidden;
+    }
+
+    .progress-bar-fill {
+        height: 100%;
+        background-color: var(--primary);
+        width: 0%;
+        transition: width 0.5s ease;
+    }
+
+    /* Activities Layout */
+    .activities-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+    }
+
+    .activity-section {
+        background-color: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 24px;
+    }
+
+    .section-header {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--border);
+    }
+
+    /* Task Rows */
+    .task-list {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .task-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px;
+        background-color: var(--bg-dark);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        transition: all 0.2s;
+    }
+
+    .task-row:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
+    .task-info {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        flex: 1;
+        min-width: 0;
+    }
+
+    .task-icon {
+        color: var(--text-muted);
+        font-size: 18px;
+    }
+
+    .task-details {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .task-name {
+        font-weight: 500;
+        font-size: 14px;
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .task-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+    }
+
+    .task-actions {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .status-chip {
+        padding: 4px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+        background-color: var(--warning-dim);
+        color: var(--warning);
+    }
+
+    .status-ready {
+        background-color: var(--primary-dim);
+        color: var(--primary);
+    }
+
+    /* File Upload Button */
+    .upload-btn {
+        background-color: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        padding: 6px 16px;
+        border-radius: 6px;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .upload-btn:hover {
+        background-color: var(--primary);
+        color: var(--bg-dark);
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .uploaded-file-name {
+        font-size: 12px;
+        color: var(--primary);
+        max-width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: none;
+    }
+
+    /* Toast Notification */
+    #toast {
+        position: fixed;
+        bottom: 30px;
+        right: 30px;
+        background-color: var(--primary);
+        color: var(--bg-dark);
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-weight: 600;
+        box-shadow: 0 4px 12px rgba(0, 255, 136, 0.2);
+        transform: translateY(100px);
+        opacity: 0;
+        transition: all 0.3s ease;
+        z-index: 1000;
+    }
+
+    #toast.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    @media (max-width: 1024px) {
+        .activities-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            display: none; /* In a real app, add a hamburger menu */
+        }
+    }
 </style>
 </head>
 <body>
-<div id="home">
-<section class="hero"><div class="w">
-<div class="eye">Subject Portfolio · Semester 5 · Batch 2026–2027</div>
-<h1>E-Waste &amp;<br><em>Management</em></h1>
-<p class="who"><b>Ali Mehdi Mirza</b> · TE CMPN C · Roll No. 24102C0054 · Batch 2026–2027 &nbsp;|&nbsp; Prof. <b>Aniket Kundu</b></p>
-<div id="ex" class="hide" style="margin-top:22px"><button class="btn" id="exb" onclick="exp()" style="width:auto;padding:10px 20px">⬇ Export site for my professor</button><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Owner mode: open an assignment to upload or remove files. Then click Export and upload the downloaded index.html to Netlify.</p><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Got grades.json back from your professor? <input type="file" accept=".json" onchange="impG(this)" style="font-size:12px"></p></div>
-<div id="gx" class="hide" style="margin-top:22px"><button class="btn" onclick="sendG()" style="width:auto;padding:10px 20px">✉ Send my grades</button><p style="color:#b9d3c4;font-size:13px;margin:8px 0 0">Professor: grade inside each assignment, then click here to return your grades.</p></div>
-<div class="prog"><div class="big"><span id="rd">0</span><small>/<span id="tt">13</span></small></div>
-<div class="bar"><div class="t"><div class="f" id="pf" style="width: 0%;"></div></div><p>assignments ready to view and grade. The rest are being uploaded.</p></div></div>
-</div></section>
-<main class="w">
-<div class="sec"><h2>Assignments</h2><div class="fl" id="fl"><button class="on" data-f="all">All</button><button data-f="ok">Ready</button><button data-f="wait">Uploading</button></div></div>
-<div class="list" id="g">
-    
-    <div class="group-header">ISA Activities</div>
-    <div class="row" onclick="view('Toxic Chemicals_Any 5', this)" data-status="wait">
-        <div class="no">1</div>
-        <div class="mid">
-            <h3>Toxic Chemicals_Any 5</h3>
-            <p>Activity details</p>
+
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="logo-container">
+            <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+            <div class="logo-text">EWEM</div>
         </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Assignment 3_Elemental Recovery Process Update', this)" data-status="wait">
-        <div class="no">2</div>
-        <div class="mid">
-            <h3>Assignment 3_Elemental Recovery Process Update</h3>
-            <p>Activity details</p>
+        <ul class="nav-menu">
+            <li class="nav-item active"><i class="fas fa-th-large"></i> Dashboard</li>
+            <li class="nav-item"><i class="fas fa-folder-open"></i> Portfolio</li>
+            <li class="nav-item"><i class="fas fa-chart-line"></i> Analytics</li>
+            <li class="nav-item"><i class="fas fa-bullhorn"></i> Campaigns</li>
+            <li class="nav-item"><i class="fas fa-cog"></i> Settings</li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="search-box">
+                <i class="fas fa-search" style="color: var(--text-muted)"></i>
+                <input type="text" placeholder="Search submissions...">
+            </div>
+            <div class="user-profile">
+                <div class="user-info">
+                    <div class="user-name">Ali Mehdi Mirza</div>
+                    <div class="user-role">Student · TE CMPN C</div>
+                </div>
+                <div class="avatar">AM</div>
+            </div>
+        </header>
+
+        <!-- Dashboard Container -->
+        <div class="dashboard-container">
+            <div class="page-header">
+                <h1 class="page-title">E-Waste Management Project</h1>
+                <p class="page-subtitle">Semester 5 · Batch 2026–2027 · Prof. Aniket Kundu</p>
+            </div>
+
+            <!-- KPI Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="fas fa-tasks"></i></div>
+                    <div class="kpi-details">
+                        <h3>Total Assignments</h3>
+                        <div class="value" id="kpi-total">13</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon" style="color: var(--warning); background: var(--warning-dim);"><i class="fas fa-clock"></i></div>
+                    <div class="kpi-details">
+                        <h3>Pending Tasks</h3>
+                        <div class="value" id="kpi-pending">13</div>
+                    </div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-icon"><i class="fas fa-check-circle"></i></div>
+                    <div class="kpi-details" style="width: 100%;">
+                        <h3>Completed</h3>
+                        <div class="value"><span id="kpi-completed">0</span> <span style="font-size: 14px; color: var(--text-muted); font-weight: normal;">/ 13</span></div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="progress-fill"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Activities Grid -->
+            <div class="activities-grid">
+                
+                <!-- ISA Activities -->
+                <div class="activity-section">
+                    <div class="section-header">
+                        <span>ISA Activities</span>
+                        <i class="fas fa-microchip" style="color: var(--primary)"></i>
+                    </div>
+                    <div class="task-list" id="isa-list">
+                        <!-- Rows injected by JS to keep HTML clean -->
+                    </div>
+                </div>
+
+                <!-- ESE Activities -->
+                <div class="activity-section">
+                    <div class="section-header">
+                        <span>ESE Activities</span>
+                        <i class="fas fa-globe" style="color: var(--primary)"></i>
+                    </div>
+                    <div class="task-list" id="ese-list">
+                        <!-- Rows injected by JS -->
+                    </div>
+                </div>
+
+            </div>
         </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Assignment 2_Submit the Class Activity_Map of e waste', this)" data-status="wait">
-        <div class="no">3</div>
-        <div class="mid">
-            <h3>Assignment 2_Submit the Class Activity_Map of e waste</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Assignment Zero_Check AAP', this)" data-status="wait">
-        <div class="no">4</div>
-        <div class="mid">
-            <h3>Assignment Zero_Check AAP</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Assignment 1_ E waste Traker', this)" data-status="wait">
-        <div class="no">5</div>
-        <div class="mid">
-            <h3>Assignment 1_ E waste Traker</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
     </div>
 
-    <div class="group-header">ESE Activities</div>
-    <div class="row" onclick="view('E waste India Vs World Data Task_Class Activity', this)" data-status="wait">
-        <div class="no">6</div>
-        <div class="mid">
-            <h3>E waste India Vs World Data Task_Class Activity</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Carbon Footprint Task_Excel activity Task', this)" data-status="wait">
-        <div class="no">7</div>
-        <div class="mid">
-            <h3>Carbon Footprint Task_Excel activity Task</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('TE CMPN C PPT_ State tracker submission Folder', this)" data-status="wait">
-        <div class="no">8</div>
-        <div class="mid">
-            <h3>TE CMPN C PPT_ State tracker submission Folder</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('E Waste Recovery Process_Modification for Design Patent', this)" data-status="wait">
-        <div class="no">9</div>
-        <div class="mid">
-            <h3>E Waste Recovery Process_Modification for Design Patent</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Indian Companies Following E waste Rules_Comparative Study', this)" data-status="wait">
-        <div class="no">10</div>
-        <div class="mid">
-            <h3>Indian Companies Following E waste Rules_Comparative Study</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Novel Idea_E waste_Pitch Deck Submit Folder_CMPN C', this)" data-status="wait">
-        <div class="no">11</div>
-        <div class="mid">
-            <h3>Novel Idea_E waste_Pitch Deck Submit Folder_CMPN C</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('Campaign For E Waste in Campus_Class Activity', this)" data-status="wait">
-        <div class="no">12</div>
-        <div class="mid">
-            <h3>Campaign For E Waste in Campus_Class Activity</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-    <div class="row" onclick="view('LEED Certification of Green Buildings in India', this)" data-status="wait">
-        <div class="no">13</div>
-        <div class="mid">
-            <h3>LEED Certification of Green Buildings in India</h3>
-            <p>Activity details</p>
-        </div>
-        <div class="chip wait">Pending</div>
-        <div class="go">→</div>
-    </div>
-
-</div>
-</main>
-<div id="toast" class="hide"></div>
-<footer>Tap any ready assignment to open the work. Everything opens inside this page. · <a href="#" onclick="toggleEdit();return false" style="color:inherit">Owner mode</a></footer>
-</div>
-
-<div id="view" class="hide"><div class="w">
-<button class="back" onclick="closeView()">← All assignments</button>
-<div class="eye" id="vk" style="margin-top:16px"></div>
-<h1 class="vh" id="vh"></h1><p class="sub" id="vs"></p>
-<div class="tabs" id="vt"></div>
-<div id="pv" class="hide"></div>
-<iframe id="fr" sandbox="allow-scripts allow-popups" title="Assignment work"></iframe>
-<p id="ol" style="margin:8px 0 0"></p>
-
-<!-- UPDATED UPLOAD BOX -->
-<div class="ubox hide" id="ub">
-    <h3>⬆ Upload your submission</h3>
-    <p class="sub" style="font-size:13px">Any file type works: PDF, Word, Excel, PPT, images, zip… PDF, Word, Excel and images preview inside the page; other types can be downloaded.</p>
-    <!-- Removed 'accept' attribute to allow any file extension -->
-    <input type="file" id="fi" multiple onchange="uploadFile(this)">
-    <p class="sub" id="um"></p>
-</div>
-
-<div id="gp"></div>
-<p class="sub" id="vn" style="margin-top:14px;font-size:13px"></p>
-<button class="back" onclick="closeView()">← All assignments</button>
-<div style="height:30px"></div>
-</div></div>
+    <!-- Toast Notification -->
+    <div id="toast">File uploaded successfully!</div>
 
 <script>
-// Basic dummy logic to make the interface work for demonstration
-let isOwner = false;
-let currentActivity = null;
-let uploads = {};
+    const isaActivities = [
+        "Toxic Chemicals_Any 5",
+        "Assignment 3_Elemental Recovery Process Update",
+        "Assignment 2_Submit the Class Activity_Map of e waste",
+        "Assignment Zero_Check AAP",
+        "Assignment 1_ E waste Traker"
+    ];
 
-function toggleEdit() {
-    isOwner = !isOwner;
-    document.getElementById('ex').classList.toggle('hide', !isOwner);
-    showToast(isOwner ? "Owner mode enabled" : "Owner mode disabled");
-    if(currentActivity) view(currentActivity, null);
-}
+    const eseActivities = [
+        "E waste India Vs World Data Task_Class Activity",
+        "Carbon Footprint Task_Excel activity Task",
+        "TE CMPN C PPT_ State tracker submission Folder",
+        "E Waste Recovery Process_Modification for Design Patent",
+        "Indian Companies Following E waste Rules_Comparative Study",
+        "Novel Idea_E waste_Pitch Deck Submit Folder_CMPN C",
+        "Campaign For E Waste in Campus_Class Activity",
+        "LEED Certification of Green Buildings in India"
+    ];
 
-function view(activityName, element) {
-    currentActivity = activityName;
-    document.getElementById('home').classList.add('hide');
-    document.getElementById('view').classList.remove('hide');
-    document.getElementById('vh').innerText = activityName;
-    document.getElementById('vk').innerText = activityName.includes("Assignment") ? "ISA Activity" : "ESE Activity";
-    
-    let ubox = document.getElementById('ub');
-    if (isOwner) {
-        ubox.classList.remove('hide');
-        document.getElementById('um').innerText = uploads[activityName] ? `Uploaded: ${uploads[activityName].map(f => f.name).join(', ')}` : '';
-    } else {
-        ubox.classList.add('hide');
+    let totalTasks = isaActivities.length + eseActivities.length;
+    let completedTasks = 0;
+
+    function createTaskRow(title, index) {
+        const rowId = 'task-' + index;
+        return `
+            <div class="task-row" id="${rowId}">
+                <div class="task-info">
+                    <i class="fas fa-file-alt task-icon"></i>
+                    <div class="task-details">
+                        <div class="task-name" title="${title}">${title}</div>
+                        <div class="task-meta">Submission Required</div>
+                    </div>
+                </div>
+                <div class="task-actions">
+                    <span class="uploaded-file-name" id="filename-${rowId}"></span>
+                    <span class="status-chip status-pending" id="status-${rowId}">Pending</span>
+                    <label class="upload-btn">
+                        <i class="fas fa-upload"></i> Upload
+                        <input type="file" onchange="handleUpload(this, '${rowId}')">
+                    </label>
+                </div>
+            </div>
+        `;
     }
-}
 
-function closeView() {
-    document.getElementById('home').classList.remove('hide');
-    document.getElementById('view').classList.add('hide');
-    currentActivity = null;
-}
+    function renderLists() {
+        const isaContainer = document.getElementById('isa-list');
+        const eseContainer = document.getElementById('ese-list');
 
-function uploadFile(input) {
-    if (!currentActivity || input.files.length === 0) return;
-    uploads[currentActivity] = Array.from(input.files);
-    document.getElementById('um').innerText = `Uploaded: ${uploads[currentActivity].map(f => f.name).join(', ')}`;
-    updateProgress();
-    showToast("File(s) uploaded successfully.");
-}
+        let globalIndex = 0;
+        
+        isaActivities.forEach(activity => {
+            isaContainer.innerHTML += createTaskRow(activity, globalIndex++);
+        });
 
-function updateProgress() {
-    let total = 13;
-    let ready = Object.keys(uploads).length;
-    document.getElementById('rd').innerText = ready;
-    document.getElementById('pf').style.width = `${(ready/total)*100}%`;
-    
-    // Update chip status (this relies on the DOM structure in 'g')
-    let rows = document.querySelectorAll('.row');
-    rows.forEach(row => {
-        let title = row.querySelector('h3').innerText;
-        if(uploads[title]) {
-            row.dataset.status = "ok";
-            let chip = row.querySelector('.chip');
-            chip.className = "chip ok";
-            chip.innerText = "Ready";
-        }
-    });
-}
+        eseActivities.forEach(activity => {
+            eseContainer.innerHTML += createTaskRow(activity, globalIndex++);
+        });
+    }
 
-function showToast(msg) {
-    let t = document.getElementById('toast');
-    t.innerText = msg;
-    t.classList.remove('hide');
-    setTimeout(() => t.classList.add('hide'), 3000);
-}
+    function handleUpload(input, rowId) {
+        if (input.files && input.files.length > 0) {
+            const fileName = input.files[0].name;
+            
+            // Update UI for the specific row
+            const statusChip = document.getElementById(`status-${rowId}`);
+            const fileNameDisplay = document.getElementById(`filename-${rowId}`);
+            const uploadBtn = input.parentElement;
 
-// Filtering logic
-document.getElementById('fl').addEventListener('click', function(e) {
-    if(e.target.tagName === 'BUTTON') {
-        document.querySelectorAll('#fl button').forEach(b => b.classList.remove('on'));
-        e.target.classList.add('on');
-        let filter = e.target.dataset.f;
-        document.querySelectorAll('.row').forEach(row => {
-            if(filter === 'all' || row.dataset.status === filter) {
-                row.style.display = 'flex';
-            } else {
-                row.style.display = 'none';
+            // Only increment if it was previously pending
+            if (statusChip.classList.contains('status-pending')) {
+                completedTasks++;
+                updateKPIs();
             }
-        });
-        document.querySelectorAll('.group-header').forEach(header => {
-            header.style.display = filter === 'all' ? 'block' : 'none';
-        });
-    }
-});
 
+            // Update Status Chip
+            statusChip.className = 'status-chip status-ready';
+            statusChip.innerHTML = '<i class="fas fa-check"></i> Ready';
+
+            // Show File Name
+            fileNameDisplay.style.display = 'block';
+            fileNameDisplay.innerText = fileName;
+            fileNameDisplay.title = fileName;
+
+            // Change Button Text
+            uploadBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Update <input type="file" onchange="handleUpload(this, '${rowId}')">`;
+
+            showToast("Work uploaded successfully!");
+        }
+    }
+
+    function updateKPIs() {
+        document.getElementById('kpi-completed').innerText = completedTasks;
+        document.getElementById('kpi-pending').innerText = totalTasks - completedTasks;
+        
+        const progressPercent = (completedTasks / totalTasks) * 100;
+        document.getElementById('progress-fill').style.width = `${progressPercent}%`;
+    }
+
+    function showToast(message) {
+        const toast = document.getElementById('toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
+
+    // Initialize Dashboard
+    window.onload = () => {
+        renderLists();
+        document.getElementById('kpi-total').innerText = totalTasks;
+        document.getElementById('kpi-pending').innerText = totalTasks;
+    };
 </script>
+
 </body>
 </html>
