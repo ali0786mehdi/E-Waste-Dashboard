@@ -13,6 +13,8 @@
         --surface-hover: #1e2538;
         --primary: #00ff88;
         --primary-dim: rgba(0, 255, 136, 0.15);
+        --info: #3ab7ff;
+        --info-dim: rgba(58, 183, 255, 0.15);
         --text-main: #f8fafc;
         --text-muted: #94a3b8;
         --border: #2a3143;
@@ -341,7 +343,7 @@
     .task-actions {
         display: flex;
         align-items: center;
-        gap: 16px;
+        gap: 12px;
     }
 
     .status-chip {
@@ -362,12 +364,10 @@
         color: var(--primary);
     }
 
-    /* File Upload Button */
-    .upload-btn {
+    /* Buttons */
+    .action-btn {
         background-color: transparent;
-        color: var(--primary);
-        border: 1px solid var(--primary);
-        padding: 6px 16px;
+        padding: 6px 14px;
         border-radius: 6px;
         font-size: 12px;
         font-weight: 600;
@@ -375,11 +375,26 @@
         transition: all 0.2s;
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
+    }
+
+    .upload-btn {
+        color: var(--primary);
+        border: 1px solid var(--primary);
     }
 
     .upload-btn:hover {
         background-color: var(--primary);
+        color: var(--bg-dark);
+    }
+
+    .view-btn {
+        color: var(--info);
+        border: 1px solid var(--info);
+    }
+
+    .view-btn:hover {
+        background-color: var(--info);
         color: var(--bg-dark);
     }
 
@@ -390,11 +405,15 @@
     .uploaded-file-name {
         font-size: 12px;
         color: var(--primary);
-        max-width: 150px;
+        max-width: 120px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
         display: none;
+    }
+
+    .hide {
+        display: none !important;
     }
 
     /* Toast Notification */
@@ -427,7 +446,12 @@
 
     @media (max-width: 768px) {
         .sidebar {
-            display: none; /* In a real app, add a hamburger menu */
+            display: none;
+        }
+        .task-actions {
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
         }
     }
 </style>
@@ -553,6 +577,9 @@
         "LEED Certification of Green Buildings in India"
     ];
 
+    // Global file storage dictionary accessible in browser session
+    const uploads = {};
+
     let totalTasks = isaActivities.length + eseActivities.length;
     let completedTasks = 0;
 
@@ -570,9 +597,16 @@
                 <div class="task-actions">
                     <span class="uploaded-file-name" id="filename-${rowId}"></span>
                     <span class="status-chip status-pending" id="status-${rowId}">Pending</span>
-                    <label class="upload-btn">
+                    
+                    <!-- View Button (Hidden by default) -->
+                    <button class="action-btn view-btn hide" id="viewbtn-${rowId}" onclick="viewSubmission('${title}')">
+                        <i class="fas fa-eye"></i> View
+                    </button>
+                    
+                    <!-- Upload/Update Button -->
+                    <label class="action-btn upload-btn" id="uploadlbl-${rowId}">
                         <i class="fas fa-upload"></i> Upload
-                        <input type="file" onchange="handleUpload(this, '${rowId}')">
+                        <input type="file" onchange="handleUpload(this, '${rowId}', '${title}')">
                     </label>
                 </div>
             </div>
@@ -594,14 +628,19 @@
         });
     }
 
-    function handleUpload(input, rowId) {
+    function handleUpload(input, rowId, activityTitle) {
         if (input.files && input.files.length > 0) {
-            const fileName = input.files[0].name;
+            const file = input.files[0];
+            const fileName = file.name;
+
+            // Save file in memory for preview
+            uploads[activityTitle] = file;
             
-            // Update UI for the specific row
+            // Get Elements
             const statusChip = document.getElementById(`status-${rowId}`);
             const fileNameDisplay = document.getElementById(`filename-${rowId}`);
-            const uploadBtn = input.parentElement;
+            const uploadLbl = document.getElementById(`uploadlbl-${rowId}`);
+            const viewBtn = document.getElementById(`viewbtn-${rowId}`);
 
             // Only increment if it was previously pending
             if (statusChip.classList.contains('status-pending')) {
@@ -618,10 +657,24 @@
             fileNameDisplay.innerText = fileName;
             fileNameDisplay.title = fileName;
 
-            // Change Button Text
-            uploadBtn.innerHTML = `<i class="fas fa-sync-alt"></i> Update <input type="file" onchange="handleUpload(this, '${rowId}')">`;
+            // Unhide View Button
+            viewBtn.classList.remove('hide');
+
+            // Change Button Text to Update
+            uploadLbl.innerHTML = `<i class="fas fa-sync-alt"></i> Update <input type="file" onchange="handleUpload(this, '${rowId}', '${activityTitle}')">`;
 
             showToast("Work uploaded successfully!");
+        }
+    }
+
+    function viewSubmission(activityTitle) {
+        const file = uploads[activityTitle];
+        if (file) {
+            // Generate a local blob URL for the file to be previewed/downloaded natively
+            const fileURL = URL.createObjectURL(file);
+            window.open(fileURL, '_blank');
+        } else {
+            showToast("File not found!");
         }
     }
 
