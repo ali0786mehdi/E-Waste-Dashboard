@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>E-Waste &amp; Management: Student Portfolio</title>
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <!-- File preview libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <style>
+    /* ── CSS Variables ── */
+    :root {
+      --bg: #f6f9f6;
+      --card: #fff;
+      --tx: #10231a;
+      --mu: #5d7065;
+      --ac: #17995c;
+      --bd: #dce7df;
+      --lime: #b6f26b;
+      --hero-from: #0a241a;
+      --hero-to: #0f3a28;
+      --radius: 16px;
+      --shadow: 0 2px 12px rgba(16,35,26,0.08);
+      --shadow-hover: 0 8px 32px rgba(16,35,26,0.15);
+      --transition: 0.18s ease;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0b1410;
+        --card: #13211a;
+        --tx: #e8f2ec;
+        --mu: #92a99b;
+        --ac: #4be08f;
+        --bd: #233629;
+        --shadow: 0 2px 12px rgba(0,0,0,0.3);
+        --shadow-hover: 0 8px 32px rgba(0,0,0,0.5);
+      }
+    }
+
+    /* ── Reset & Base ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      color: var(--tx);
+      min-height: 100vh;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+    a { color: var(--ac); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { cursor: pointer; font-family: inherit; }
+
+    /* ── Layout ── */
+    .wrap {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+    .hidden { display: none !important; }
+
+    /* ── Hero ── */
+    .hero {
+      background: linear-gradient(160deg, var(--hero-from), var(--hero-to));
+      padding: 64px 0 56px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 80% 50%, rgba(182,242,107,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero .wrap { position: relative; }
+    .eyebrow {
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--lime);
+      opacity: 0.85;
+      margin-bottom: 16px;
+    }
+    .hero h1 {
+      font-family: 'Fraunces', Georgia, serif;
+      font-size: clamp(2.4rem, 6vw, 3.6rem);
+      font-weight: 600;
+      color: #fff;
+      line-height: 1.08;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--lime);
+    }
+    .who {
+      font-size: 0.92rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 40px;
+    }
+    .who b { color: rgba(255,255,255,0.9); }
+
+    /* ── Progress ── */
+    .progress {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px;
+      padding: 20px 24px;
+      backdrop-filter: blur(8px);
+    }
+    .big-num {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 600;
+      color: var(--lime);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .big-num small {
+      font-size: 1.4rem;
+      color: rgba(255,255,255,0.4);
+      font-weight: 500;
+    }
+    .prog-bar-wrap { flex: 1; min-width: 0; }
+    .prog-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+    .prog-bar > div {
+      height: 100%;
+      background: var(--lime);
+      border-radius: 99px;
+      transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+    .prog-bar-wrap p {
+      font-size: 0.82rem;
+      color: rgba(255,255,255,0.5);
+    }
+
+    /* ── Main Content ── */
+    main.wrap { padding-top: 48px; padding-bottom: 64px; }
+    .section-title {
+      font-family: 'Fraunces', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--tx);
+      margin-bottom: 24px;
+      letter-spacing: -0.01em;
+    }
+
+    /* ── Card List ── */
+    .card-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .card {
+      display: flex;
+      align-items: flex-start;
+      gap: 18px;
+      width: 100%;
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: var(--radius);
+      padding: 22px 20px;
+      box-shadow: var(--shadow);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      position: relative;
+    }
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--ac);
+    }
+    .card:focus-visible {
+      outline: 2px solid var(--ac);
+      outline-offset: 2px;
+    }
+    .card-num {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--bd);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.88rem;
+      color: var(--mu);
+      margin-top: 2px;
+    }
+    .card-body { flex: 1; min-width: 0; }
+    .card-body h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--tx);
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+    .card-body p {
+      font-size: 0.88rem;
+      color: var(--mu);
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+    .date {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--mu);
+      background: var(--bg);
+      border: 1px solid var(--bd);
+      border-radius: 99px;
+      padding: 2px 10px;
+    }
+    .chip {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 99px;
+      padding: 4px 12px;
+      white-space: nowrap;
+      margin-top: 2px;
+    }
+    .chip-ok {
+      background: rgba(23,153,92,0.12);
+      color: var(--ac);
+      border: 1px solid rgba(23,153,92,0.25);
+    }
+    .chip-wait {
+      background: var(--bg);
+      color: var(--mu);
+      border: 1px solid var(--bd);
+    }
+    @media (prefers-color-scheme: dark) {
+      .chip-ok {
+        background: rgba(75,224,143,0.1);
+        color: var(--ac);
+        border-color: rgba(75,224,143,0.2);
+      }
+    }
+
+    /* ── Detail View ── */
+    #view .wrap {
+      padding-top: 40px;
+      padding-bottom: 72px;
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: none;
+      border: 1px solid var(--bd);
+      border-radius: 99px;
+      padding: 8px 18px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--mu);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+      margin-bottom: 32px;
+    }
+    .back-btn:hover {
+      background: var(--card);
+      color: var(--tx);
+      border-color: var(--ac);
+    }
+    .view-title {
+      font-family: 'Fraunces', serif;
+      font-size: clamp(1.6rem, 4vw, 2.2rem);
+      font-weight: 600;
+      color: var(--tx);
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .sub {
+      font-size: 1rem;
+      color: var(--mu);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+    .portal-label {
+      display: inline-block;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--mu);
+      background: var(--bg);
+      border: 1px solid var(--bd);
+      border-radius: 8px;
+      padding: 6px 12px;
+      margin-bottom: 36px;
+    }
+    #view h3 {
+      font-family: 'Fraunces', serif;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--tx);
+      margin-bottom: 16px;
+    }
+
+    /* ── File List ── */
+    #file-list {
+      margin-bottom: 32px;
+    }
+    .empty {
+      color: var(--mu);
+      font-size: 0.92rem;
+      padding: 24px 0;
+      border-top: 1px solid var(--bd);
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px 16px;
+      background: var(--card);
+      border: 1px solid var(--bd);
+      border-radius: 12px;
+      margin-bottom: 8px;
+      transition: box-shadow var(--transition);
+    }
+    .file-item:hover { box-shadow: var(--shadow); }
+    .file-icon {
+      font-size: 1.4rem;
+      flex-shrink: 0;
+      line-height: 1;
+    }
+    .file-info {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .file-name {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--tx);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .file-size {
+      font-size: 0.78rem;
+      color: var(--mu);
+    }
+    .btn-view {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 16px;
+      background: var(--ac);
+      color: #fff;
+      border-radius: 99px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: opacity var(--transition), transform var(--transition);
+    }
+    .btn-view:hover {
+      opacity: 0.88;
+      transform: translateY(-1px);
+      text-decoration: none;
+    }
+    .btn-del {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid var(--bd);
+      border-radius: 99px;
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      color: var(--mu);
+      transition: background var(--transition), color var(--transition), border-color var(--transition);
+    }
+    .btn-del:hover {
+      background: #fee2e2;
+      color: #dc2626;
+      border-color: #fca5a5;
+    }
+    @media (prefers-color-scheme: dark) {
+      .btn-del:hover {
+        background: rgba(220,38,38,0.15);
+        color: #f87171;
+        border-color: rgba(248,113,113,0.3);
+      }
+    }
+
+    /* ── Upload Area ── */
+    .upload-area {
+      margin-top: 12px;
+      margin-bottom: 36px;
+      border: 2px dashed var(--bd);
+      border-radius: var(--radius);
+      padding: 28px 24px;
+      text-align: center;
+      background: var(--card);
+      transition: border-color var(--transition);
+    }
+    .upload-area:hover { border-color: var(--ac); }
+    .upload-area h3 {
+      margin-bottom: 14px;
+    }
+    #file-input {
+      display: block;
+      margin: 0 auto 12px;
+      font-size: 0.88rem;
+      color: var(--mu);
+    }
+    #upload-status {
+      font-size: 0.85rem;
+      color: var(--ac);
+      font-weight: 500;
+      min-height: 1.2em;
+    }
+
+    /* ── Divider between file section and upload ── */
+    .section-divider {
+      height: 1px;
+      background: var(--bd);
+      margin: 32px 0;
+    }
+
+    /* ── Footer ── */
+    footer {
+      border-top: 1px solid var(--bd);
+      padding: 24px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      max-width: 100%;
+    }
+    footer p {
+      font-size: 0.82rem;
+      color: var(--mu);
+    }
+    footer a {
+      font-size: 0.82rem;
+      color: var(--mu);
+      text-decoration: none;
+      border-bottom: 1px solid var(--bd);
+      transition: color var(--transition), border-color var(--transition);
+    }
+    footer a:hover {
+      color: var(--ac);
+      border-color: var(--ac);
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 600px) {
+      .hero { padding: 48px 0 40px; }
+      .progress { flex-direction: column; align-items: flex-start; gap: 14px; }
+      .card {
+        flex-wrap: wrap;
+        gap: 12px;
+      }
+      .chip { align-self: flex-start; }
+      .file-item { flex-wrap: wrap; gap: 10px; }
+      footer { flex-direction: column; align-items: flex-start; }
+      .back-btn { margin-bottom: 24px; }
+    }
+    @media (max-width: 400px) {
+      .wrap { padding: 0 16px; }
+      .hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HOME VIEW ── -->
+  <div id="home">
+    <section class="hero">
+      <div class="wrap">
+        <p class="eyebrow">Subject Portfolio · Semester 5 · Batch 2026–2027</p>
+        <h1>E-Waste &amp;<br><em>Management</em></h1>
+        <p class="who"><b>Ali Mehdi Mirza</b> · TE CMPN C · Roll No. 24102C0054 | Prof. <b>Aniket Kundu</b></p>
+        <div class="progress">
+          <span class="big-num"><span id="progress-num">0</span><small>/7</small></span>
+          <div class="prog-bar-wrap">
+            <div class="prog-bar"><div id="progress-bar" style="width:0%"></div></div>
+            <p>assignments with files uploaded</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <main class="wrap">
+      <h2 class="section-title">Assignments</h2>
+      <div id="cards" class="card-list"></div>
+    </main>
+  </div>
+
+  <!-- ── DETAIL VIEW ── -->
+  <div id="view" class="hidden">
+    <div class="wrap">
+      <button class="back-btn" onclick="showHome()">← All assignments</button>
+      <p class="eyebrow" id="v-date"></p>
+      <h1 class="view-title" id="v-headline"></h1>
+      <p class="sub" id="v-desc"></p>
+      <p class="portal-label" id="v-portal"></p>
+
+      <h3>Uploaded Files</h3>
+      <div id="file-list"></div>
+
+      <!-- Upload area (owner only) -->
+      <div id="upload-area" class="hidden upload-area">
+        <div class="section-divider"></div>
+        <h3>Upload Files</h3>
+        <input type="file" multiple onchange="handleUpload(this)" id="file-input">
+        <p id="upload-status"></p>
+      </div>
+
+      <button class="back-btn" onclick="showHome()" style="margin-top:8px;">← All assignments</button>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <p>E-Waste &amp; Management · Ali Mehdi Mirza · 24102C0054</p>
+    <p><a href="#" onclick="toggleLogin(); return false;" id="owner-link">Owner login</a></p>
+  </footer>
+
+  <script>
+    // ── DATA ──
+    const ASSIGNMENTS = [
+      {
+        id: 'a1',
+        date: '24 Jul',
+        headline: 'Five Toxic Chemicals Hiding in Our Gadgets',
+        desc: 'Five hazardous substances in electronics and their health and environmental effects.',
+        portal: 'Toxic Chemicals_Any 5'
+      },
+      {
+        id: 'a2',
+        date: '28 Jul',
+        headline: 'Reclaiming Elements: How Precious Metals Return from Waste',
+        desc: 'Recovery process updated with bioleaching before hydrothermal extraction.',
+        portal: 'Assignment 3_Elemental Recovery Process Update'
+      },
+      {
+        id: 'a3',
+        date: '19 Aug',
+        headline: 'A Patent-Ready Upgrade to E-Waste Recovery',
+        desc: 'Proposed process modification framed for a design patent.',
+        portal: 'E Waste Recovery Process_Modification for Design Patent'
+      },
+      {
+        id: 'a4',
+        date: '2 Sep',
+        headline: 'Who Plays by the Rules? Indian Companies and E-Waste Law',
+        desc: 'Compliance analysis of Indian companies against e-waste law.',
+        portal: 'Indian Companies Following E waste Rules_Comparative Study'
+      },
+      {
+        id: 'a5',
+        date: '6 Sep',
+        headline: 'Novel Idea Pitch Deck: Turning E-Waste into Opportunity',
+        desc: 'Pitch deck for an AI-powered e-waste exchange platform.',
+        portal: 'Novel Idea_E waste_Pitch Deck Submit Folder_CMPN C'
+      },
+      {
+        id: 'a6',
+        date: '9 Sep',
+        headline: 'Campus Campaign: Making Our College E-Waste Smart',
+        desc: 'Campaign poster and awareness quiz for college campus.',
+        portal: 'Campaign For E Waste in Campus_Class Activity'
+      },
+      {
+        id: 'a7',
+        date: '29 Sep',
+        headline: 'Building Green: LEED-Certified Buildings Across India',
+        desc: 'Ratings of 10 recent LEED-certified buildings with supporting notes.',
+        portal: 'LEED Certification of Green Buildings in India'
+      }
+    ];
+
+    // ── STATE ──
+    let ownerToken = sessionStorage.getItem('ownerToken') || '';
+    let fileCounts = {};
+    let currentAsgn = null;
+    let currentFiles = [];
+
+    // ── AUTH ──
+    const isOwner = () => !!ownerToken;
+
+    async function toggleLogin() {
+      if (isOwner()) {
+        ownerToken = '';
+        sessionStorage.removeItem('ownerToken');
+        updateOwnerLink();
+        // If detail view is open, refresh it
+        if (currentAsgn && !document.getElementById('view').classList.contains('hidden')) {
+          document.getElementById('upload-area').classList.add('hidden');
+          renderFiles();
+        }
+        return;
+      }
+      const pw = prompt('Owner password:');
+      if (!pw) return;
+      try {
+        const r = await fetch('/api/login', {
+          method: 'POST',
+          body: JSON.stringify({ password: pw }),
+          headers: { 'Content-Type': 'application/json' }
+        });
+        if (!r.ok) { alert('Wrong password'); return; }
+        ownerToken = (await r.json()).token;
+        sessionStorage.setItem('ownerToken', ownerToken);
+        updateOwnerLink();
+        // If detail view is open, refresh it
+        if (currentAsgn && !document.getElementById('view').classList.contains('hidden')) {
+          document.getElementById('upload-area').classList.toggle('hidden', !isOwner());
+          renderFiles();
+        }
+      } catch (e) {
+        alert('Login failed. Please try again.');
+      }
+    }
+
+    function updateOwnerLink() {
+      const link = document.getElementById('owner-link');
+      if (link) {
+        link.textContent = isOwner() ? 'Owner: log out' : 'Owner login';
+      }
+    }
+
+    // ── API ──
+    async function listFiles(id) {
+      try {
+        const r = await fetch('/api/files/' + encodeURIComponent(id));
+        return r.ok ? r.json() : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    const fileUrl = key => '/api/file/' + encodeURIComponent(key);
+
+    async function uploadFile(id, file) {
+      try {
+        const r = await fetch(
+          `/api/files/${encodeURIComponent(id)}?name=${encodeURIComponent(file.name)}`,
+          {
+            method: 'POST',
+            headers: {
+              Authorization: 'Bearer ' + ownerToken,
+              'Content-Type': file.type || 'application/octet-stream'
+            },
+            body: file
+          }
+        );
+        if (r.status === 401) {
+          ownerToken = '';
+          sessionStorage.removeItem('ownerToken');
+          updateOwnerLink();
+          alert('Session expired. Please log in again.');
+          return false;
+        }
+        return r.ok;
+      } catch (e) {
+        return false;
+      }
+    }
+
+    async function deleteFile(key) {
+      if (!confirm('Delete this file permanently?')) return;
+      try {
+        await fetch(fileUrl(key), {
+          method: 'DELETE',
+          headers: { Authorization: 'Bearer ' + ownerToken }
+        });
+      } catch (e) {
+        // ignore network errors on delete
+      }
+      openAssignment(currentAsgn);
+    }
+
+    // ── INIT ──
+    async function init() {
+      updateOwnerLink();
+      // Load file counts for all assignments in parallel
+      const results = await Promise.all(ASSIGNMENTS.map(a => listFiles(a.id)));
+      ASSIGNMENTS.forEach((a, i) => { fileCounts[a.id] = results[i].length; });
+      renderList();
+      // Handle hash navigation
+      if (location.hash) {
+        const hashId = location.hash.slice(1);
+        if (ASSIGNMENTS.some(a => a.id === hashId)) {
+          openAssignment(hashId);
+        }
+      }
+    }
+
+    // ── RENDER LIST (HOME) ──
+    function renderList() {
+      document.getElementById('view').classList.add('hidden');
+      document.getElementById('home').classList.remove('hidden');
+
+      const ready = ASSIGNMENTS.filter(a => fileCounts[a.id] > 0).length;
+      document.getElementById('progress-num').textContent = ready;
+      document.getElementById('progress-bar').style.width = (ready / ASSIGNMENTS.length * 100) + '%';
+
+      document.getElementById('cards').innerHTML = ASSIGNMENTS.map((a, i) => `
+        <button class="card" onclick="openAssignment('${a.id}')" aria-label="Open assignment: ${escHtml(a.headline)}">
+          <span class="card-num">${i + 1}</span>
+          <div class="card-body">
+            <h3>${escHtml(a.headline)}</h3>
+            <p>${escHtml(a.desc)}</p>
+            <span class="date">${escHtml(a.date)}</span>
+          </div>
+          <span class="chip ${fileCounts[a.id] > 0 ? 'chip-ok' : 'chip-wait'}">
+            ${fileCounts[a.id] > 0 ? '✓ Work added' : 'No files yet'}
+          </span>
+        </button>
+      `).join('');
+    }
+
+    // ── SHOW HOME ──
+    function showHome() {
+      currentAsgn = null;
+      history.pushState(null, '', location.pathname);
+      renderList();
+    }
+
+    // ── OPEN ASSIGNMENT ──
+    async function openAssignment(id) {
+      currentAsgn = id;
+      const a = ASSIGNMENTS.find(x => x.id === id);
+      if (!a) return;
+
+      history.pushState(null, '', '#' + id);
+
+      document.getElementById('home').classList.add('hidden');
+      document.getElementById('view').classList.remove('hidden');
+
+      // Populate header fields
+      document.getElementById('v-headline').textContent = a.headline;
+      document.getElementById('v-desc').textContent = a.desc;
+      document.getElementById('v-portal').textContent = 'Portal: ' + a.portal;
+      document.getElementById('v-date').textContent = a.date;
+
+      // Show/hide upload area for owner
+      document.getElementById('upload-area').classList.toggle('hidden', !isOwner());
+
+      // Reset file list to loading state
+      document.getElementById('file-list').innerHTML = '<p class="empty" style="opacity:0.5;">Loading files…</p>';
+
+      // Load and render files
+      currentFiles = await listFiles(id);
+      fileCounts[id] = currentFiles.length;
+      renderFiles();
+
+      // Scroll to top of view
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── RENDER FILES ──
+    function renderFiles() {
+      const ul = document.getElementById('file-list');
+      if (!currentFiles.length) {
+        ul.innerHTML = '<p class="empty">No files uploaded yet.</p>';
+        return;
+      }
+      ul.innerHTML = currentFiles.map(f => `
+        <div class="file-item">
+          <span class="file-icon" aria-hidden="true">${fileIcon(f.name)}</span>
+          <div class="file-info">
+            <span class="file-name" title="${escHtml(f.name)}">${escHtml(f.name)}</span>
+            <span class="file-size">${formatSize(f.size)}</span>
+          </div>
+          <a href="${fileUrl(f.key)}" target="_blank" rel="noopener noreferrer" class="btn-view">View</a>
+          ${isOwner() ? `<button class="btn-del" onclick="deleteFile('${escAttr(f.key)}')" aria-label="Delete ${escHtml(f.name)}">✕</button>` : ''}
+        </div>
+      `).join('');
+    }
+
+    // ── UPLOAD ──
+    async function handleUpload(input) {
+      const files = [...input.files];
+      if (!files.length) return;
+      const status = document.getElementById('upload-status');
+      status.textContent = 'Uploading…';
+      let allOk = true;
+      for (const f of files) {
+        const ok = await uploadFile(currentAsgn, f);
+        if (!ok) {
+          status.textContent = 'Upload failed. Check your session and try again.';
+          allOk = false;
+          break;
+        }
+      }
+      if (allOk) {
+        status.textContent = '✓ Uploaded successfully!';
+        setTimeout(() => { status.textContent = ''; }, 2500);
+        input.value = '';
+        currentFiles = await listFiles(currentAsgn);
+        fileCounts[currentAsgn] = currentFiles.length;
+        renderFiles();
+      }
+    }
+
+    // ── HELPERS ──
+    function fileIcon(name) {
+      if (/\.pdf$/i.test(name)) return '📄';
+      if (/\.(jpg|jpeg|png|gif|webp|svg)$/i.test(name)) return '🖼️';
+      if (/\.docx?$/i.test(name)) return '📝';
+      if (/\.(xlsx?|csv)$/i.test(name)) return '📊';
+      if (/\.(pptx?|ppt)$/i.test(name)) return '📊';
+      return '📎';
+    }
+
+    function formatSize(n) {
+      if (!n) return '';
+      if (n >= 1e6) return (n / 1e6).toFixed(1) + ' MB';
+      return Math.max(1, Math.round(n / 1024)) + ' KB';
+    }
+
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    function escAttr(str) {
+      return String(str).replace(/'/g, '&#39;').replace(/"/g, '&quot;');
+    }
+
+    // Handle browser back/forward
+    window.addEventListener('popstate', () => {
+      if (location.hash) {
+        const hashId = location.hash.slice(1);
+        if (ASSIGNMENTS.some(a => a.id === hashId)) {
+          openAssignment(hashId);
+          return;
+        }
+      }
+      renderList();
+    });
+
+    // ── START ──
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
