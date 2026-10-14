@@ -1,4 +1,4 @@
-a<div align="center">
+<div align="center">
   <h1>🌍 EWEM · E-Waste &amp; Management</h1>
   <p><strong>Subject portfolio of ISA &amp; ESE activities · Semester 5 · Batch 2026–2027</strong></p>
 </div>
