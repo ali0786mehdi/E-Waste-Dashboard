@@ -1,4 +1,47 @@
+a<div align="center">
+  <h1>🌍 EWEM · E-Waste &amp; Management</h1>
+  <p><strong>Subject portfolio of ISA &amp; ESE activities · Semester 5 · Batch 2026–2027</strong></p>
+</div>
+
+---
+
+## Overview
+
+A single-page portfolio site that collects all of my **E-Waste & Management** assignments in one place.
+Every assignment opens inside the page, so the work can be read without downloading anything.
+
+> **Prepared by:** Ali Mehdi Mirza · TE CMPN C · Roll No. 24102C0054  
+> **Professor:** Aniket Kundu
+
+## What's inside
+
+**ISA activities (5)**
+1. Toxic Chemicals (any 5)
+2. Assignment 3: Elemental Recovery Process Update
+3. Assignment 2: Map of e-waste (class activity)
+4. Assignment Zero: Check AAP
+5. Assignment 1: E-waste Tracker (dashboard, report, dataset)
+
+**ESE activities (8)**
+1. E-waste India vs World (data task)
+2. Carbon Footprint (Excel activity)
+3. State tracker presentation (Uttar Pradesh)
+4. E-waste recovery process modification for a design patent
+5. Indian companies following e-waste rules (comparative study, EPR calculator)
+6. Novel idea pitch deck (ReTechLoop)
+7. Campaign for e-waste on campus (poster and quiz)
+8. LEED certification of green buildings in India
+
+## Deploying
+
+Keep `index.html` (and optionally `netlify.toml`) in the **root** of the repository.
+Netlify serves the home page only from a file named exactly `index.html`.
+
+---
+
 <div align="center">
+  <i>Prepared as an academic portfolio for educational purposes.</i>
+</div><div align="center">
   <h1>♻️ E-Waste Management Project</h1>
   <p><strong>State E-Waste Tracker Analysis & Reporting (Maharashtra)</strong></p>
 
